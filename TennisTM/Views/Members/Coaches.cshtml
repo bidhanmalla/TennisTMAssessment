@@ -1,0 +1,50 @@
+﻿@model List<Coach>
+
+@{
+    ViewData["Title"] = "Coaches";
+}
+
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+<h1 class="my-5">Coaches</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">S.N.</th>
+            <th scope="col">Name</th>
+            @if (User.IsInRole("Admin"))
+            {
+                <th scope="col">Id</th>
+                <th scope="col">Schedules</th>
+                <th scope="col">Demote</th>
+            }
+            else
+            {
+                <th scope="col">Bio</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var coach in Model)
+        {
+            <tr>
+                <th scope="row">@(Model.IndexOf(coach) + 1)</th>
+                <td><a href="/Coaches/Index/@coach.Id">@coach.User.Name</a></td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>@coach.Id</td>
+                    <td></td>
+                    <td><a class="btn btn-danger" href="/Members/Demote/@coach.Id">Make Member</a></td>
+                }
+                else
+                {
+                    <td>@coach.Bio</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary" href="/">Back to List</a>

@@ -1,0 +1,22 @@
+﻿@model Coach
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1>@Model.User.Name</h1>
+<hr/>
+<div>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Bio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Bio)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-success" href="/Coaches/Edit/@Model?.Id"> Edit</a>
+    <a class="btn btn-primary" href="/Members/Coaches">Back to List</a>
+</div>

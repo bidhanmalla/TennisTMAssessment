@@ -1,0 +1,22 @@
+﻿@model TempSchedule
+
+<form method="post" action="Add" class="container w-50">
+    <div class="mb-3">
+        <label class="form-label">Event Name</label>
+        <input asp-for="EventName" type="text" class="form-control"/>
+    </div>
+@*     <div class="mb-3">
+        <label class="form-label">Event Time</label>
+        <input asp-for="EventTime" type="datetime-local" class="form-control"/>
+    </div> *@
+    <div class="mb-3">
+        <label class="form-label">Location</label>
+        <input asp-for="Location" type="text" class="form-control"/>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Coach</label>
+        @Html.DropDownListFor(x => x.CoachId, new SelectList(Model.CoachList, "Value", "Text"), new{@class = "form-control"})
+    </div>
+    <button type="submit" class="btn btn-primary my-3">Submit</button>
+    <p class="text-danger">@ViewData["message"]</p>
+</form>

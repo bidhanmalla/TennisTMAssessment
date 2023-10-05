@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+@model List<Schedule>
+
+<div class="d-flex align-items-center justify-content-between">
+    <h1 class="my-5">Schedules</h1>
+    <a class="btn btn-secondary" href="/Schedules/Add">Add</a>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">S.N.</th>
+            <th scope="col">Event Name</th>
+            <th scope="col">Event Time</th>
+            <th scope="col">Location</th>
+            <th scope="col">Coach</th>
+            @if (User.IsInRole("Admin")) 
+            {
+                <th scope="col">Modify</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in Model)
+        {
+            <tr>
+                <th scope="row">@(Model.IndexOf(schedule)+1)</th>
+                <td>@schedule.EventName</td>
+                <td></td>
+                @* <td>@schedule.EventTime</td> *@
+                <td>@schedule.Location</td>
+                @if (schedule.Coach != null){ <td>@schedule.Coach.User.Name</td> }
+                else { <td></td> }
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a class="btn btn-success" href="/Schedules/Edit/@schedule.Id">Edit</a>
+                        <a class="btn btn-danger" href="/Schedules/Delete/@schedule.Id">Delete</a>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary" href="/">Back to List</a>
