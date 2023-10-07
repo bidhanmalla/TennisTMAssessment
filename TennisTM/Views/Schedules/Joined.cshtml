@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+@model List<Schedule>
+
+@{
+    ViewData["Title"] = "Joined Schedules";
+}
+
+<div class="d-flex align-items-center justify-content-between">
+    <h1 class="my-5">Joined Schedules</h1>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">S.N.</th>
+            <th scope="col">Event Name</th>
+            <th scope="col">Event Time</th>
+            <th scope="col">Location</th>
+            <th scope="col">Coach</th>
+            <th scope="col">Leave Schedule</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var schedule in Model)
+        {
+            <tr>
+                <th scope="row">@(Model.IndexOf(schedule) + 1)</th>
+                <td>@schedule.EventName</td>
+                <td>@schedule.EventTime</td>
+                <td>@schedule.Location</td>
+                @if (schedule.Coach != null)
+                {
+                    <td><a class="text-primary text-decoration-none text-uppercase fw-bold" href="/Coaches/Index/@schedule.Coach.Id">@schedule.Coach.User.Name</a></td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                <td>
+                    <a class="btn btn-danger" href="/Schedules/Leave/@schedule.Id">Leave</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary" href="/Schedules">Back to List</a>

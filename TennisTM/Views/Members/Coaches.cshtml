@@ -14,15 +14,11 @@
         <tr>
             <th scope="col">S.N.</th>
             <th scope="col">Name</th>
+            <th scope="col">Bio</th>
             @if (User.IsInRole("Admin"))
             {
                 <th scope="col">Id</th>
-                <th scope="col">Schedules</th>
                 <th scope="col">Demote</th>
-            }
-            else
-            {
-                <th scope="col">Bio</th>
             }
         </tr>
     </thead>
@@ -31,16 +27,12 @@
         {
             <tr>
                 <th scope="row">@(Model.IndexOf(coach) + 1)</th>
-                <td><a href="/Coaches/Index/@coach.Id">@coach.User.Name</a></td>
+                <td><a class="text-primary text-decoration-none text-uppercase fw-bold" href="/Coaches/Index/@coach.Id">@coach.User.Name</a></td>
+                <td>@coach.Bio</td>
                 @if (User.IsInRole("Admin"))
                 {
                     <td>@coach.Id</td>
-                    <td></td>
                     <td><a class="btn btn-danger" href="/Members/Demote/@coach.Id">Make Member</a></td>
-                }
-                else
-                {
-                    <td>@coach.Bio</td>
                 }
             </tr>
         }

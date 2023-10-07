@@ -1,22 +1,66 @@
-﻿@model Coach
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@inject UserManager<User> UserManager
+
+@model Coach
 
 @{
     ViewData["Title"] = "Profile";
 }
 
-<h1>@Model.User.Name</h1>
-<hr/>
-<div>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bio)
-        </dd>
-    </dl>
+<div class="container-sm d-flex justify-content-around align-items-center">
+    <img class="w-25" src="@Model.Image" alt="CoachPhoto"/>
+    <div>
+        <h2>@Model.User.Name</h2>
+        <dl class="row">
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Bio)
+            </dd>
+        </dl>
+    </div>
 </div>
-<div>
-    <a class="btn btn-success" href="/Coaches/Edit/@Model?.Id"> Edit</a>
-    <a class="btn btn-primary" href="/Members/Coaches">Back to List</a>
-</div>
+
+    <h2 class="mt-5">
+        @Html.DisplayNameFor(model => model.Schedules)
+    </h2>
+    @if (Model.Schedules != null && Model.Schedules.Count != 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">S.N.</th>
+                    <th scope="col">Event Name</th>
+                    <th scope="col">Event Time</th>
+                    <th scope="col">Event Members</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var schedule in Model.Schedules)
+                {
+                    <tr>
+                        <th scope="row">@(Model.Schedules.ToList().IndexOf(schedule) + 1)</th>
+                        <td class="text-decoration-none text-uppercase fw-bold">@schedule.EventName</td>
+                        <td>@schedule.EventTime</td>
+                        <td>
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false">
+                                View
+                            </button>
+                            <ul class="dropdown-menu">
+                                @if (schedule.Users.Count == 0)
+                                {
+                                    <li class="dropdown-item disabled text-black">No members yet</li>
+                                }
+                                else
+                                {
+                                    @foreach (var user in schedule.Users)
+                                    {
+                                        <li class="dropdown-item disabled text-black">@user.Name</li>
+                                    }
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }

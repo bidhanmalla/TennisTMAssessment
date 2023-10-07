@@ -1,4 +1,9 @@
 ﻿@page
+
+@using Microsoft.AspNetCore.Identity;
+@using TennisTM.Models;
+@inject UserManager<User> UserManager 
+
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
@@ -14,6 +19,22 @@
             <input asp-for="Username" class="form-control" disabled />
             <label asp-for="Username" class="form-label">Email</label>
         </div>
+        <div class="form-floating my-3">
+            <input asp-for="Input.Name" class="form-control"/>
+            <label asp-for="Input.Name" class="form-label">Name</label>
+        </div>
+        @if (User.IsInRole("Coach"))
+        {
+            <div class="form-floating my-3">
+                <input asp-for="Input.Bio" class="form-control" />
+                <label asp-for="Input.Bio" class="form-label">Bio</label>
+            </div>
+            <div class="form-floating my-3">
+                <input asp-for="Input.Image" class="form-control" />
+                <label asp-for="Input.Image" class="form-label">Image</label>
+            </div>
+        }
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Update Profile</button>
     </form>
 </div>
 

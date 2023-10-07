@@ -1,22 +1,23 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@inject UserManager<User> UserManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
-
-@using Microsoft.AspNetCore.Identity
-@inject UserManager<User> UserManager
 
 @if(User.IsInRole("Admin"))
 {
     <div class="d-flex flex-column gap-3">
         <a class="btn bg-primary text-white" href="/Schedules">Schedules</a>
         <a class="btn btn-success" href="/Members">Members</a>
-        <a class="btn btn-secondary" href="/Members/Coaches">Coaches</a>
+        <a class="btn btn-dark" href="/Members/Coaches">Coaches</a>
     </div>
 }
 else if(User.IsInRole("Coach"))
 {
-    <div>
-        Lol. You're a coach.
+    <div class="d-flex flex-column gap-3">
+        <a class="btn bg-primary text-white" href="/Home/Profile">Profile</a>
     </div>
 }
 else

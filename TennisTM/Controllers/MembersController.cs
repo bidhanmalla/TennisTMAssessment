@@ -34,8 +34,8 @@ namespace TennisTM.Controllers
             var members = users.Where(user => !coaches.Any(coach=> coach.UserId == user.Id)).ToList();
             return View(members);
         }
-        [Authorize(Roles = "Admin")]
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Promote(string Id)
         {
             var member = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == Id);

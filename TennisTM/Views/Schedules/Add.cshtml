@@ -1,14 +1,18 @@
-﻿@model TempSchedule
+﻿@{
+    ViewData["Title"] = "Add Schedule";
+}
+
+@model TempSchedule
 
 <form method="post" action="Add" class="container w-50">
     <div class="mb-3">
         <label class="form-label">Event Name</label>
         <input asp-for="EventName" type="text" class="form-control"/>
     </div>
-@*     <div class="mb-3">
+    <div class="mb-3">
         <label class="form-label">Event Time</label>
-        <input asp-for="EventTime" type="datetime-local" class="form-control"/>
-    </div> *@
+        <input asp-for="EventTime" type="datetime-local" step="60" min=@Model.EventTime.ToString("yyyy-MM-ddTHH:mm") class="form-control" />
+    </div>
     <div class="mb-3">
         <label class="form-label">Location</label>
         <input asp-for="Location" type="text" class="form-control"/>

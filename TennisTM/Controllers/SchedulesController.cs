@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.Differencing;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TennisTM.Data;
 using TennisTM.Models;
 
@@ -23,6 +24,7 @@ namespace TennisTM.Controllers
             return View(schedules);
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add()
         {
             var coaches = await dbContext.Coaches.Include(c => c.User).ToListAsync();
@@ -39,6 +41,7 @@ namespace TennisTM.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(TempSchedule scheduleRes)
         {
             var coaches = await dbContext.Coaches.Include(c => c.User).ToListAsync();
@@ -49,8 +52,8 @@ namespace TennisTM.Controllers
                 {
                     Id = Guid.NewGuid(),
                     EventName = scheduleRes.EventName,
-                    EventTime = "",
                     Location = scheduleRes.Location,
+                    EventTime = scheduleRes.EventTime,
                     Coach = tempCoach
                 };
                 await dbContext.Schedules.AddAsync(schedule);
@@ -59,7 +62,7 @@ namespace TennisTM.Controllers
             }
             else
             {
-                ViewData["message"] = "Item Add Failed.";
+                ViewData["message"] = "Adding Schedule Failed.";
                 foreach (var coach in coaches)
                 {
                     scheduleRes.CoachList.Add(new SelectListItem
@@ -72,7 +75,8 @@ namespace TennisTM.Controllers
             };
         }
 
-        [HttpGet]   
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(Guid Id) 
         {
             var coaches = await dbContext.Coaches.Include(c => c.User).ToListAsync();
@@ -100,6 +104,7 @@ namespace TennisTM.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(TempSchedule scheduleRes)
         {
             var schedule = await dbContext.Schedules.FirstOrDefaultAsync(x => x.Id == scheduleRes.Id);
@@ -113,7 +118,7 @@ namespace TennisTM.Controllers
                 if (tempCoach != null) schedule.Coach = tempCoach;
                 else
                 {
-                    ViewData["message"] = "Item Add Failed.";
+                    ViewData["message"] = "Editing Schedule Failed.";
                     foreach (var coach in coaches)
                     {
                         scheduleRes.CoachList.Add(new SelectListItem
@@ -129,6 +134,7 @@ namespace TennisTM.Controllers
             }
             return View(scheduleRes);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid Id)
         {
             var schedule = await dbContext.Schedules.FirstOrDefaultAsync(x => x.Id == Id);
@@ -138,6 +144,48 @@ namespace TennisTM.Controllers
                 await dbContext.SaveChangesAsync();
 
                 return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Join(Guid Id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await dbContext.Users.Include(x => x.Schedules).FirstOrDefaultAsync(x => x.Id == userId);
+            var schedule = await dbContext.Schedules.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == Id);
+            if (user != null && schedule != null)
+            {
+                schedule.Users.Add(user);
+                user.Schedules.Add(schedule);
+                await dbContext.SaveChangesAsync();
+            };
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Leave(Guid Id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await dbContext.Users.Include(x => x.Schedules).FirstOrDefaultAsync(x => x.Id == userId);
+            var schedule = await dbContext.Schedules.Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == Id);
+            if (user != null && schedule != null)
+            {
+                schedule.Users.Remove(user);
+                user.Schedules.Remove(schedule);
+                await dbContext.SaveChangesAsync();
+            };
+            return RedirectToAction("Joined");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Joined()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await dbContext.Users.Include(x => x.Schedules)
+                .ThenInclude(y => y.Coach)
+                .ThenInclude(z => z.User)
+                .FirstOrDefaultAsync(x => x.Id == userId);
+            if (user != null)
+            {
+                return View(user.Schedules.ToList());
             }
             return RedirectToAction("Index");
         }

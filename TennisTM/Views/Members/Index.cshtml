@@ -12,7 +12,6 @@
             <th scope="col">S.N.</th>
             <th scope="col">Name</th>
             <th scope="col">Id</th>
-            <th scope="col">Schedules</th>
             <th scope="col">Promote</th>
         </tr>
     </thead>
@@ -23,7 +22,6 @@
                 <th scope="row">@(Model.IndexOf(member) + 1)</th>
                 <td>@member.Name</td>
                 <td>@member.Id</td>
-                <td></td>
                 <td><a class="btn btn-success" href="/Members/Promote/@member.Id">Make Coach</a></td>
             </tr>
         }
